@@ -27,7 +27,7 @@ public class Timsort {
         }
     }
 
-    private static void merge(int[] array) {
+    private static void merge(int[] array, Pair<Integer> left, Pair<Integer> right) {
 
     }
 
@@ -72,12 +72,32 @@ public class Timsort {
 
         // Step 3 : Merging.
         Stack<Pair<Integer>> stack = new Stack<Pair<Integer>>();
+        Pair<Integer> runX, runY, runZ;
+        int X, Y, Z;
         for (i = 0; i < runCount; i++) {
             stack.enqueue(new Pair<Integer>(runs[i][0], runs[i][1]));
-            Pair<Integer> runX = stack.dequeue();
-            Pair<Integer> runY = stack.dequeue();
-            Pair<Integer> runZ = stack.dequeue();
+
+            runX = stack.dequeue();
+            runY = stack.getSize() >= 2 ? stack.dequeue() : null;
+            runZ = stack.getSize() >= 3 ? stack.dequeue() : null;
+
+            X = runX.v2;
+            Y = runY != null ? runY.v2 : null;
+            Z = runZ != null ? runZ.v2 : null;
+
+            while (true) {
+
+                break;
+            }
         }
+    }
+
+    private static void updateXYZ(Stack<Pair<Integer>> s,
+                                  Pair<Integer> rX, Pair<Integer> rY, Pair<Integer> rZ,
+                                  int X, int Y, int Z) {
+        rX = s.dequeue();
+        rY = s.getSize() >= 2 ? s.dequeue() : null;
+        rZ = s.getSize() >= 3 ? s.dequeue() : null;
     }
 
     private static void reverseSubSequence(int[] array, int l, int r) {
