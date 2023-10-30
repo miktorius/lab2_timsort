@@ -102,8 +102,8 @@ public class DoublyLinkedList<T> {
                 current = current.next;
             }
             return current;
-        } catch (IndexOutOfBoundsException e) {
-            System.out.println("Index out of bounds!");
+        } catch (Exception e) {
+            // System.out.println("Index out of bounds!");
             return null;
         }
     }

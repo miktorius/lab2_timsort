@@ -71,33 +71,71 @@ public class Timsort {
         }
 
         // Step 3 : Merging.
+
         Stack<Pair<Integer>> stack = new Stack<Pair<Integer>>();
         Pair<Integer> runX, runY, runZ;
         int X, Y, Z;
+
+        // variables initialization
+        runX = null;
+        runY = null;
+        runZ = null;
+        X = 0;
+        Y = 0;
+        Z = 0;
+
+        // runs processing
         for (i = 0; i < runCount; i++) {
             stack.enqueue(new Pair<Integer>(runs[i][0], runs[i][1]));
-
-            runX = stack.dequeue();
-            runY = stack.getSize() >= 2 ? stack.dequeue() : null;
-            runZ = stack.getSize() >= 3 ? stack.dequeue() : null;
-
-            X = runX.v2;
-            Y = runY != null ? runY.v2 : null;
-            Z = runZ != null ? runZ.v2 : null;
-
+            updateXYZ(stack, runX, runY, runZ, X, Y, Z);
             while (true) {
-
+                if (runY != null && runZ != null) {
+                    if (stack.getSize() >= 2 && Y <= X) {
+                        merge(array, runY, runX);
+                        stack.dequeue();
+                        stack.dequeue();
+                        stack.enqueue(new Pair<Integer>(runY.v1, Y + X));
+                        updateXYZ(stack, runX, runY, runZ, X, Y, Z);
+                        continue;
+                    }
+                    if (stack.getSize() >= 3 && Z <= X + Y) {
+                        if (Z < X) {
+                            merge(array, runZ, runY);
+                            runX = stack.dequeue();
+                            stack.dequeue();
+                            stack.dequeue();
+                            stack.enqueue(new Pair<Integer>(runZ.v1, Z + Y));
+                            stack.enqueue(runX);
+                        } else {
+                            merge(array, runY, runX);
+                            stack.dequeue();
+                            stack.dequeue();
+                            stack.enqueue(new Pair<Integer>(runY.v1, X + Y));
+                        }
+                        updateXYZ(stack, runX, runY, runZ, X, Y, Z);
+                        continue;
+                    }
+                } else if (runY != null && runZ == null) {
+                    if (Y <= X) {
+                        merge(array, runY, runX);
+                        stack.dequeue();
+                        stack.dequeue();
+                        stack.enqueue(new Pair<Integer>(runY.v1, X + Y));
+                    }
+                }
                 break;
             }
         }
     }
 
-    private static void updateXYZ(Stack<Pair<Integer>> s,
-                                  Pair<Integer> rX, Pair<Integer> rY, Pair<Integer> rZ,
-                                  int X, int Y, int Z) {
-        rX = s.dequeue();
-        rY = s.getSize() >= 2 ? s.dequeue() : null;
-        rZ = s.getSize() >= 3 ? s.dequeue() : null;
+    private static void updateXYZ(Stack<Pair<Integer>> s, Pair<Integer> rX, Pair<Integer> rY, Pair<Integer> rZ, int X,
+            int Y, int Z) {
+        rX = s.peek(0);
+        rY = s.getSize() >= 2 ? s.peek(1) : null;
+        rZ = s.getSize() >= 3 ? s.peek(2) : null;
+        X = rX.v2;
+        Y = rY != null ? rY.v2 : null;
+        Z = rZ != null ? rZ.v2 : null;
     }
 
     private static void reverseSubSequence(int[] array, int l, int r) {

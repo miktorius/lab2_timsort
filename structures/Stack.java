@@ -27,11 +27,11 @@ public class Stack<T> extends DoublyLinkedList<T> {
 
     }
 
-    public Node<T> peek(int index) {
+    public T peek(int index) {
         if (size > 0) {
             // Node<T> value = this.find(0);
             // return value.getData();
-            return this.find(index);
+            return this.find(index).getData();
         } else {
             return null;
         }
