@@ -97,13 +97,13 @@ public class DoublyLinkedList<T> {
     public Node<T> find(int _index) {
         try {
             Node<T> current = head;
-            while (current.index != _index) {
+            while (_index > 0) {
                 _index--;
                 current = current.next;
             }
             return current;
         } catch (Exception e) {
-            // System.out.println("Index out of bounds!");
+            System.out.println("Index out of bounds!");
             return null;
         }
     }
@@ -123,13 +123,13 @@ public class DoublyLinkedList<T> {
     }
 
     // public String getList() {
-    //     var elemArray = new String[size];
-    //     Node<T> pointer = head;
-    //     for (int j = 0; j < size; j++) {
-    //         elemArray[j] = pointer.data; // + "|" + pointer.index;
-    //         pointer = pointer.next;
-    //     }
-    //     return String.join(" ", elemArray);
+    // var elemArray = new String[size];
+    // Node<T> pointer = head;
+    // for (int j = 0; j < size; j++) {
+    // elemArray[j] = pointer.data; // + "|" + pointer.index;
+    // pointer = pointer.next;
+    // }
+    // return String.join(" ", elemArray);
     // }
 
     public int getSize() {

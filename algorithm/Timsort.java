@@ -29,6 +29,30 @@ public class Timsort {
 
     private static void merge(int[] array, Pair<Integer> left, Pair<Integer> right) {
 
+        // copying to temporary array
+        int[] tempArray = new int[left.v2];
+        for (int i = 0, j = left.v1; i < left.v2; i++, j++) {
+            tempArray[i] = array[j];
+        }
+
+        // merging
+        int ptrL = 0;
+        int ptrR = right.v1;
+        int leftLen = left.v2;
+        int rightLen = right.v1 + right.v2;
+        int i;
+        for (i = left.v1; ptrL < leftLen && ptrR < rightLen; i++) {
+            if (tempArray[ptrL] < array[ptrR]) {
+                array[i] = tempArray[ptrL++];
+            } else {
+                array[i] = array[ptrR++];
+            }
+        }
+
+        // copying remaining elements
+        while (ptrL < leftLen) {
+            array[i++] = tempArray[ptrL++];
+        }
     }
 
     private static void timSort(int[] array) {
@@ -61,8 +85,7 @@ public class Timsort {
                 }
                 reverseSubSequence(array, i, i + runSize - 1); // reverse descending subsequence
             }
-            runs[runCount][1] = (i >= N - minrun) ? N - i : Math.max(runSize, minrun); // run size
-                                                                                       // control
+            runs[runCount][1] = (i >= N - minrun) ? N - i : Math.max(runSize, minrun); // run size control
             insertionSort(array, runs[runCount][0], runs[runCount][0] + runs[runCount][1]); // sorting current run
 
             i += Math.max(runSize, minrun); // next step preparations
@@ -87,15 +110,28 @@ public class Timsort {
         // runs processing
         for (i = 0; i < runCount; i++) {
             stack.enqueue(new Pair<Integer>(runs[i][0], runs[i][1]));
-            updateXYZ(stack, runX, runY, runZ, X, Y, Z);
+            // updating variables
+            runX = stack.peek(0);
+            runY = stack.getSize() >= 2 ? stack.peek(1) : null;
+            runZ = stack.getSize() >= 3 ? stack.peek(2) : null;
+            X = runX.v2;
+            Y = runY != null ? runY.v2 : 0;
+            Z = runZ != null ? runZ.v2 : 0;
+            // invariants checking
             while (true) {
                 if (runY != null && runZ != null) {
-                    if (stack.getSize() >= 2 && Y <= X) {
+                    if (stack.getSize() >= 2 && (Y <= X || i == runCount - 1)) {
                         merge(array, runY, runX);
                         stack.dequeue();
                         stack.dequeue();
                         stack.enqueue(new Pair<Integer>(runY.v1, Y + X));
-                        updateXYZ(stack, runX, runY, runZ, X, Y, Z);
+                        // updating variables
+                        runX = stack.peek(0);
+                        runY = stack.getSize() >= 2 ? stack.peek(1) : null;
+                        runZ = stack.getSize() >= 3 ? stack.peek(2) : null;
+                        X = runX.v2;
+                        Y = runY != null ? runY.v2 : 0;
+                        Z = runZ != null ? runZ.v2 : 0;
                         continue;
                     }
                     if (stack.getSize() >= 3 && Z <= X + Y) {
@@ -112,30 +148,33 @@ public class Timsort {
                             stack.dequeue();
                             stack.enqueue(new Pair<Integer>(runY.v1, X + Y));
                         }
-                        updateXYZ(stack, runX, runY, runZ, X, Y, Z);
+                        // updating variables
+                        runX = stack.peek(0);
+                        runY = stack.getSize() >= 2 ? stack.peek(1) : null;
+                        runZ = stack.getSize() >= 3 ? stack.peek(2) : null;
+                        X = runX.v2;
+                        Y = runY != null ? runY.v2 : 0;
+                        Z = runZ != null ? runZ.v2 : 0;
                         continue;
                     }
                 } else if (runY != null && runZ == null) {
-                    if (Y <= X) {
+                    if (Y <= X || i == runCount - 1) {
                         merge(array, runY, runX);
                         stack.dequeue();
                         stack.dequeue();
                         stack.enqueue(new Pair<Integer>(runY.v1, X + Y));
+                        // updating variables
+                        runX = stack.peek(0);
+                        runY = stack.getSize() >= 2 ? stack.peek(1) : null;
+                        runZ = stack.getSize() >= 3 ? stack.peek(2) : null;
+                        X = runX.v2;
+                        Y = runY != null ? runY.v2 : 0;
+                        Z = runZ != null ? runZ.v2 : 0;
                     }
                 }
                 break;
             }
         }
-    }
-
-    private static void updateXYZ(Stack<Pair<Integer>> s, Pair<Integer> rX, Pair<Integer> rY, Pair<Integer> rZ, int X,
-            int Y, int Z) {
-        rX = s.peek(0);
-        rY = s.getSize() >= 2 ? s.peek(1) : null;
-        rZ = s.getSize() >= 3 ? s.peek(2) : null;
-        X = rX.v2;
-        Y = rY != null ? rY.v2 : null;
-        Z = rZ != null ? rZ.v2 : null;
     }
 
     private static void reverseSubSequence(int[] array, int l, int r) {
@@ -149,7 +188,7 @@ public class Timsort {
 
     private static int getMinrun(int N) {
         int r = 0;
-        while (N >= 64) {
+        while (N >= 4) {
             r |= (N & 1);
             N >>= 1;
         }

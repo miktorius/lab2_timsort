@@ -44,7 +44,7 @@ public class UI {
         boolean running = true;
 
         while (running) {
-            // clearScreen();
+            clearScreen();
             System.out.println("Output: " + _output);
             System.out.println("Choose an option:");
             System.out.println("1. Launch");
