@@ -61,8 +61,8 @@ public class UI {
                         _output = "Invalid input!";
                         break;
                     }
-                    int[] array = Timsort.generateGallopTestArray(arraySize, 1, 10, 50, 60);
-                    // int[] array = Timsort.generateRandomArray(arraySize);
+                    // int[] array = Timsort.generateGallopTestArray(arraySize, 1, 10, 50, 60);
+                    int[] array = Timsort.generateRandomArray(arraySize);
                     _output = "\n\nRandom array: " + Arrays.toString(array) + "\n\nSorted array: "
                             + Timsort.launch(array) + "\n";
                     break;
