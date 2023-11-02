@@ -62,7 +62,8 @@ public class Timsort {
                 seriesCount = 0;
                 continue;
             }
-            // collecting remaining elements if any
+
+            // comparing elements
             if (tempArray[ptrL] < array[ptrR]) {
                 array[i] = tempArray[ptrL++];
                 if (lastElemFlag == false) {
